@@ -5,66 +5,41 @@ import items from "./items";
 
 function App() {
   const [itemArray, setItemArray] = React.useState(items);
-  const [shoppingCart, setShoppingCart] = React.useState({
-    items: [],
-    totalCost: 0,
-  });
 
   function addToCart(e) {
     const { id } = e.target;
-    let selectedItem = {};
-
-    //detects id of div and matches it to item for sale
-    itemArray.map((item) => {
-      if (id === item.id) {
-        selectedItem = item;
-        // setItemArray((prevArray) => {
-        //   return { ...prevArray, quantity: prevArray.quantity + 1 };
-        // });
-        setShoppingCart((prevCart) => {
-          return {
-            ...prevCart,
-            items: [...prevCart.items, item],
-            totalCost: prevCart.totalCost + item.cost,
-          };
-        });
-      }
-    });
-    console.log(selectedItem);
+    setItemArray(
+      itemArray.map((item) => {
+        if (item.id === id) {
+          return { ...item, quantity: item.quantity + 1 };
+        } else {
+          return item;
+        }
+      })
+    );
   }
-
-  //HALF functionality
-  //removes all from cart
-  //possibly a for loop is better so I can break once it finds ONE instance
 
   function removeFromCart(e) {
     const { id } = e.target;
-
-    //Find the item and filter it out for removal
-    //BUG: Removes ALL of the items of that type
-    //BUG: Total cost doesn't find total
-    //newCost returns an object
-    //BUG: total cost only works if removing ONE item
-
-    //WORKS OK BUT NEEDS TO BREAK AT ONE ITEM
-
-    itemArray.map((item) => {
-      if (item.id === id) {
-        setShoppingCart((prevCart) => {
-          const newItems = prevCart.items.filter((item) => item !== id);
-
-          return {
-            ...prevCart,
-            items: [...newItems],
-            totalCost: prevCart.totalCost - item.cost,
-          };
-        });
-      }
-    });
+    setItemArray(
+      itemArray.map((item) => {
+        if (item.id === id) {
+          return { ...item, quantity: item.quantity - 1 };
+        } else {
+          return item;
+        }
+      })
+    );
   }
 
+  const totalCost = itemArray.reduce((prev, item) => {
+    return prev + item.cost * item.quantity;
+  }, 0);
+
   console.log("SHOPPING CART");
-  console.log(shoppingCart);
+  console.log(itemArray);
+  console.log("TOTAL COST");
+  console.log(totalCost);
 
   const merch = itemArray.map((item) => {
     return (
